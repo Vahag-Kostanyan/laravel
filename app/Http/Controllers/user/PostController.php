@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
 
     public function index (Request $request) {
+        dd(Currency::first()->toArray());
         
         $search = $request->input('search');
         $category_id = $request->input('category_id');
