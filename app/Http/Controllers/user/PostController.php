@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Models\Currency;
 use App\Models\Post;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -70,7 +72,15 @@ class PostController extends Controller
 
         $validate = validate($request->all(), Post::getValidateRules());
 
-        dd($validate);
+        $post = Post::query()->firstOrCreate([
+            'user_id' => User::query()->value('id'),
+            'title' => $validate['title'],
+            'content' => $validate['content'],
+            'published_at' => new Carbon($validate['published_at'] ?? null),
+            'published' => $validate['published'] ?? false,
+        ]);
+
+        dd($post->toArray());
     }
 
     public function edit($id)

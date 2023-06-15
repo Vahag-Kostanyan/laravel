@@ -8,9 +8,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+
+/**
+ * @property string $name
+ * @property string $email
+ */
+
+ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $attributes = [
+        'admin' => false,
+        'is_active' => true
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +52,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function getUserValidate()
+    {
+        return [
+            'name' => ['required', 'string', 'max:50'],
+            'email' => ['required', 'string', 'max:50', 'email', 'unique:users'],
+            'password' => ['required', 'string', 'min:7', 'max:50', 'confirmed'],
+            'agreement' => ['accepted']
+        ];
+    }
 }

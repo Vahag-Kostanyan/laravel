@@ -2,6 +2,7 @@
 
 @section('page.title', 'Page Registration')
 
+
 @section('auth.content')
     <x-card>
         <x-card-header>
@@ -15,6 +16,7 @@
             </x-slot>
         </x-card-header>
         <x-card-body>
+            <x-errors/>
             <x-form action="{{ route('register.store') }}" method="POST">
                 <x-form-item>
                     <x-labele required> {{ __('Email') }} </x-labele>
@@ -33,11 +35,11 @@
 
                 <x-form-item>
                     <x-labele required> {{ __('Password confirmation') }} </x-labele>
-                    <x-input id="password_confrmation" type="password" name="password_confrmation" />
+                    <x-input id="password_confrmation" type="password" name="password_confirmation" />
                 </x-form-item>
 
                 <x-form-item>
-                    <x-checkbox>
+                    <x-checkbox  name="agreement" :checked="!! request()->old('agreement')">
                         {{ __('Remember me') }}
                     </x-checkbox>
                 </x-form-item>

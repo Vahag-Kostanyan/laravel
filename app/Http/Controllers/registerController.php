@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class registerController extends Controller
@@ -11,10 +12,12 @@ class registerController extends Controller
     }
 
     public function store (Request $request) {
-        $name = $request->input('name');
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $remember = $request->boolean('remember');
-        dd($name, $email, $password, $remember);
-        }
+        $validate = validate($request->all(), User::getUserValidate());
+
+        $user = User::query()->create( array_merge($validate, [
+            'password' =>bcrypt($validate['password'])
+        ]));
+        
+        return redirect()->route('user');
+    }
 }

@@ -23,6 +23,7 @@ if(!function_exists('alert')){
 
 if(! function_exists('validate')){
     function validate (array $attributes, array $rules): array {
+        // dd($attributes, $rules);
         return validator($attributes, $rules)->validate();
     }
 }
