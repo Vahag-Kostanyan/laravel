@@ -16,60 +16,46 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $category_id = $request->input('category_id');
+        $limit = $request->input('limit') ?? 10;
+        $page = $request->input('page') ?? 1;
 
-        $post = (object) [
-            'id' => 123,
-            'title' => 'Lorem ipsum dolor sit amet.',
-            'content' => 'Lorem, ipsum <strong> dolor </strong> sit amet consectetur adipisicing elit. Non, fugiat.',
-            'category_id' => 1
-        ];
+        $offset = $limit * ($page - 1);
 
-        $posts = array_fill(0, 10, $post);
+        $posts = Post::query()
+        // ->offset($offset)
+        // ->take($limit)
+        ->paginate($limit);
 
-        $posts = array_filter($posts, function ($post) use ($search, $category_id) {
-            if ($search && !str_contains($post->title, $search)) {
-                return false;
-            }
-
-            if ($category_id && $post->category_id !== $category_id) {
-                return false;
-            }
-            return true;
-        });
         return view('user.post.index', compact('posts'));
     }
 
-    public function show()
+    private function generateRandomString(int $length = 10): string {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $randomString = '';
+    
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+    
+        return $randomString;
+    }
+
+    
+
+    public function show(Post $id)
     {
-        $post = (object) [
-            'id' => 123,
-            'title' => 'Lorem ipsum dolor sit amet.',
-            'content' => 'Lorem, ipsum <strong> dolor </strong> sit amet consectetur adipisicing elit. Non, fugiat.',
-        ];
+        $post = $id;
 
         return view('user.post.show', compact('post'));
     }
 
     public function create()
     {
-
         return view('user.post.create');
     }
 
     public function store(Request $request)
     {
-        // $validate = validator($request->all(), [
-        //     'title' => ['required', 'string', 'max:100'],
-        //     'content' => ['required', 'string'],
-        // ])->validate();
-
-        // $validate = $request->validate([
-        //     'title' => ['required', 'string', 'max:100'],
-        //     'content' => ['required', 'string', 'max:10000'],
-        // ]);
-
         $validate = validate($request->all(), Post::getValidateRules());
 
         $post = Post::query()->firstOrCreate([

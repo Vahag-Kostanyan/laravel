@@ -15,8 +15,9 @@
                     <x-post.card :post="$post" />
                 </div>
             @endforeach
-
         </div>
+
+        {{ $posts->links() }}
     @endif
 
 @endsection

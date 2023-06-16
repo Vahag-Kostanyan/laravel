@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
 
-        $post = (object) [
-            'id' => 123,
-            'title' => 'Lorem ipsum dolor sit amet.',
-            'content' => 'Lorem, ipsum <strong> dolor </strong> sit amet consectetur adipisicing elit. Non, fugiat.',
-        ];
+        $limit = $request->input('limit') ?? 10;
+        $page = $request->input('page') ?? 1;
 
-        $posts = array_fill(0, 10, $post);
+        $offset = $limit * ($page - 1);
+
+        $posts = Post::query()
+        // ->offset($offset)
+        // ->take($limit)
+        ->where('id', 5)
+        ->paginate($limit);
 
         return view('blog.index', compact('posts'));
     }
